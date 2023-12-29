@@ -39,10 +39,10 @@ A simple multiclient chat application built using Node.js and WebSocket for real
 ## Demo Users
 
 - **Username:** u1
-- **Password:** text
+- **Password:** test
 
 - **Username:** u2
-- **Password:** text
+- **Password:** test
 
 ## Usage
 
