@@ -1,4 +1,4 @@
-import { WebSocketServer, WebSocket } from "ws";
+import { WebSocketServer } from "ws";
 
 export default function init(app) {
   const wss = new WebSocketServer({ port: 8181 });
@@ -44,8 +44,8 @@ export default function init(app) {
       names: Object.keys(connections),
     });
 
-    Object.values(connections).forEach((connection)=>{
-      connection.send && connection.send(msg)
-    })
+    Object.values(connections).forEach((connection) => {
+      connection.send && connection.send(msg);
+    });
   };
 }
