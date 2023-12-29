@@ -1,0 +1,56 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Chat App
+  body 
+    div(style="width:500px; text-align:right;")
+      a(href="/logout") Logout
+    div#msgs(style="height:400px; width:400px; overflow: scroll; float:left;")
+    div#users(style="height:400px; width:100px; overflow: scroll;")
+
+    form#chatForm(action="")
+      label(for="msg") #{user}:
+      input#name(type="hidden", value=user)
+      input#msg(type="text")
+      button#sendBtn Send
+
+      script.
+        const socket = new WebSocket('ws://localhost:8181/', 'chat');
+        const name = document.querySelector('#name').value;
+
+        socket.onopen = () => {
+          socket.send(JSON.stringify({ type: 'join', name }));
+        }
+
+        document.querySelector('#sendBtn').addEventListener('click', (clickEvent) => {
+          clickEvent.preventDefault();
+          const name = document.querySelector('#name').value;
+          const msg = document.querySelector('#msg').value;
+
+          socket.send(JSON.stringify({ type: 'msg', name, msg }));
+          document.querySelector("#msg").value = '';
+        });
+
+        socket.onmessage = async (msg) => {
+          const data = JSON.parse(msg.data);
+          //- console.log(data.type)
+          switch (data.type) {
+            case 'msg':
+              const msgEl = document.createElement('div');
+              msgEl.innerText = `${data.name}: ${data.msg}`;
+              document.querySelector('#msgs').appendChild(msgEl);
+              break;
+            case 'join':
+              document.querySelector('#users').innerHTML = '';
+              data.names.forEach(name => {
+                const userEl = document.createElement('div');
+                userEl.innerText = name;
+                document.querySelector('#users').appendChild(userEl);
+              });
+              break;
+          }
+
+          
+        };
